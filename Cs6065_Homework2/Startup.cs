@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Cs6065_Homework2.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Cs6065_Homework2
 {
@@ -32,10 +33,28 @@ namespace Cs6065_Homework2
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.Password = new PasswordOptions
+                {
+                    RequireDigit = false,
+                    RequiredLength = 2,
+                    RequiredUniqueChars = 1,
+                    RequireLowercase = false,
+                    RequireNonAlphanumeric = false
+                };
+                options.SignIn = new SignInOptions
+                {
+                    RequireConfirmedAccount = false,
+                    RequireConfirmedEmail = false,
+                    RequireConfirmedPhoneNumber = false
+                };
+                options.User = new UserOptions { RequireUniqueEmail = true };
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllersWithViews();
-           services.AddRazorPages();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +71,15 @@ namespace Cs6065_Homework2
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+
+            // instead of using https redirection, allow forwarded headers
+            // this lets us put the asp.net webapp server (kestrel) behind nginx
+            //app.UseHttpsRedirection();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseStaticFiles();
 
             app.UseRouting();
