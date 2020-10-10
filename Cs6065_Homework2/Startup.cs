@@ -41,7 +41,8 @@ namespace Cs6065_Homework2
                     RequiredLength = 2,
                     RequiredUniqueChars = 1,
                     RequireLowercase = false,
-                    RequireNonAlphanumeric = false
+                    RequireNonAlphanumeric = false,
+                    RequireUppercase=false
                 };
                 options.SignIn = new SignInOptions
                 {
@@ -49,7 +50,7 @@ namespace Cs6065_Homework2
                     RequireConfirmedEmail = false,
                     RequireConfirmedPhoneNumber = false
                 };
-                options.User = new UserOptions { RequireUniqueEmail = true };
+                options.User = new UserOptions { RequireUniqueEmail = false };
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddRouting(options => options.LowercaseUrls = true);
