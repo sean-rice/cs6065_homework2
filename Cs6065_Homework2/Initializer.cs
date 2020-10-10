@@ -1,6 +1,6 @@
 namespace FitnessWeb
 {
-    public static class Initialize
+    public static class Initializer
     {
         public static void Initialize()
         {
