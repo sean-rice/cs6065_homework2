@@ -36,9 +36,9 @@ namespace Cs6065_Homework2.Controllers
             FantasyRoster? roster = await _rosterService.GetRosterForUserIdAsync(currentUser.Id);
             if (roster == null)
             {
-                return View("~/Views/Roster/BuildRoster.cshtml", null);
+                return View($"~/Views/{RouteData.Values["controller"]}/BuildRoster.cshtml", null);
             }
-            return View("~/Views/Roster/ViewRoster.cshtml", roster);
+            return View($"~/Views/{RouteData.Values["controller"]}/ViewRoster.cshtml", roster);
         }
 
         [Route("Roster/{username}")]
@@ -55,7 +55,7 @@ namespace Cs6065_Homework2.Controllers
             // queried user not found; return error
             if (queriedUser == null)
             {
-                return View("~/Views/Home/UserNotFound.cshtml", new UserNotFoundViewModel
+                return View("~/Views/Shared/UserNotFound.cshtml", new UserNotFoundViewModel
                     {
                         ViewDataTitle = "Fantasy Roster",
                         Username = username
