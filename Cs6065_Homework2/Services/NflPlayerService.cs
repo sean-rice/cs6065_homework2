@@ -20,9 +20,27 @@ namespace Cs6065_Homework2.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<NflPlayerQuarterback>> GetQuarterbacks()
+        public async Task<IEnumerable<NflPlayerQuarterback>> GetQuarterbacksAsync()
         {
             return await _dbContext.NflQuarterbacks
+                .Include(player => player.Team)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<NflPlayerRunningBack>> GetRunningBacksAsync()
+        {
+            return await _dbContext.NflRunningBacks
+                .Include(player => player.Team)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<NflPlayerTightEnd>> GetTightEndsAsync()
+        {
+            return await _dbContext.NflTightEnds
+                .Include(player => player.Team)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<NflPlayerWideReceiver>> GetWideReceiversAsync()
+        {
+            return await _dbContext.NflWideReceivers
                 .Include(player => player.Team)
                 .ToListAsync();
         }

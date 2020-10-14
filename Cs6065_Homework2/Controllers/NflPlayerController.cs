@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+using Cs6065_Homework2.Models;
 using Cs6065_Homework2.Services;
 
 namespace Cs6065_Homework2.Controllers
@@ -22,17 +24,38 @@ namespace Cs6065_Homework2.Controllers
             return View();
         }
 
-        [Route(nameof(Quarterback))]
-        public async Task<IActionResult> Quarterback()
-        {
-            var qbs = await _nflPlayerService.GetQuarterbacks();
-            return View(qbs); 
-        }
-        [Route(nameof(Quarterback)+"/json")]
+        [Route("Quarterback/Json")]
         public async Task<JsonResult> QuarterbackJson()
         {
-            var qbs = await _nflPlayerService.GetQuarterbacks();
-            return Json(qbs, new System.Text.Json.JsonSerializerOptions
+            var players = await _nflPlayerService.GetQuarterbacksAsync();
+            return Json(players, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = null,
+                });
+        }
+        [Route("RunningBack/Json")]
+        public async Task<JsonResult> RunningBackJson()
+        {
+            var players = await _nflPlayerService.GetRunningBacksAsync();
+            return Json(players, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = null,
+                });
+        }
+        [Route("TightEnd/Json")]
+        public async Task<JsonResult> TightEndJson()
+        {
+            var players = await _nflPlayerService.GetTightEndsAsync();
+            return Json(players, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = null,
+                });
+        }
+        [Route("WideReceiver/Json")]
+        public async Task<JsonResult> WideReceiverJson()
+        {
+            var players = await _nflPlayerService.GetWideReceiversAsync();
+            return Json(players, new System.Text.Json.JsonSerializerOptions
                 {
                     PropertyNamingPolicy = null,
                 });
