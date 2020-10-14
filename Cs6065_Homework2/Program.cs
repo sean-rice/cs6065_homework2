@@ -33,6 +33,8 @@ namespace Cs6065_Homework2
                 var services = scope.ServiceProvider;
                 try
                 {
+                    
+                    Initialization.InitializeAsync(services).Wait();
                     // TODO: initialization code goes here (db, admin account, etc.)
                 }
                 catch (Exception ex)
