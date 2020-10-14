@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Cs6065_Homework2.Data;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Cs6065_Homework2.Models;
-using Microsoft.AspNetCore.HttpOverrides;
+using Cs6065_Homework2.Services;
 
 namespace Cs6065_Homework2
 {
@@ -56,6 +57,8 @@ namespace Cs6065_Homework2
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<RosterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

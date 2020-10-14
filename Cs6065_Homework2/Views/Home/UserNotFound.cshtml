@@ -1,0 +1,15 @@
+@using Cs6065_Homework2.Models.ViewModels
+
+@model UserNotFoundViewModel
+
+@{
+    @if (Model.ViewDataTitle != null)
+    {
+        ViewData["Title"] = Model.ViewDataTitle;
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">error</h1>
+    <p>user not found: @Model.Username</p>
+</div>

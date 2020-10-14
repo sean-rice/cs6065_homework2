@@ -1,0 +1,47 @@
+@using Microsoft.AspNetCore.Identity
+@using Cs6065_Homework2.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@model FantasyRoster
+
+@{
+    ViewData["Title"] = "Fantasy Roster";
+    ApplicationUser currentUser = await UserManager.GetUserAsync(User); // TODO: nullable
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        @if (Model != null)
+        {
+            <section>
+                <ol>
+                    <li>Quarterback: @Model.Quarterback.FirstName @Model.Quarterback.LastName (@Model.Quarterback.Team.Name)</li>
+                    <li>Running Back 1: @Model.RunningBack1.FirstName @Model.RunningBack1.LastName (@Model.RunningBack1.Team.Name)</li>
+                    <li>Running Back 2: @Model.RunningBack2.FirstName @Model.RunningBack2.LastName (@Model.RunningBack2.Team.Name)</li>
+                    <li>Wide Receiver 1: @Model.WideReceiver1.FirstName @Model.WideReceiver1.LastName (@Model.WideReceiver1.Team.Name)</li>
+                    <li>Wide Receiver 2: @Model.WideReceiver2.FirstName @Model.WideReceiver2.LastName (@Model.WideReceiver2.Team.Name)</li>
+                    <li>Tight End: @Model.TightEnd.FirstName @Model.TightEnd.LastName (@Model.TightEnd.Team.Name)</li>
+                </ol>
+                @if (Model.OwnerId.Equals(currentUser?.Id))
+                {
+                    <form asp-action="DeleteRoster" method="POST">
+                        <button type="submit">delete my roster</button>
+                    </form>
+                }
+            </section>
+        }
+        else
+        {
+            <section>
+                <p>this user doesn't have a roster</p>
+            </section>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
