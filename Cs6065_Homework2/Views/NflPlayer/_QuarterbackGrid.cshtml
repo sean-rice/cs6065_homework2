@@ -1,0 +1,25 @@
+<div id="quarterback-grid" style="width: 100%; height: 300px;"></div>
+<script>
+$(function () {
+    $('#quarterback-grid').w2grid({
+        name: 'quarterback_grid',
+        header: 'List of Names',
+        columns: [
+            { field: 'Id',                          caption: 'Player Id', hidden: true, size: '100px' },
+            { field: 'FirstName',                   caption: 'FN', title: 'First Name', size: '100px' },
+            { field: 'LastName',                    caption: 'LN', title: 'Last Name', size: '100px' },
+            { field: 'TeamId',                      caption: 'Team Id', hidden: true, size: '100px' },
+            { field: 'Team',                        caption: 'Team', render: function(record) { return record.Team.Name; }, size: '100px' },
+            { field: 'Position',                    caption: 'Pos', title: 'Position', hidden: true, size: '100px' },
+            { field: 'PassesCompleted',             caption: 'Cmp', title: 'Passes Completed', size: '100px' },
+            { field: 'PassesCompletionPercentage',  caption: 'Cmp%', title: 'Percentage of Passes Completed', size: '100px' },
+            { field: 'PassesAttempted',             caption: 'Att', title: 'Passes Attempted', size: '100px' },
+            { field: 'PassingYardsGained',          caption: 'Yds', title: 'Yards Gained by Passing', size: '100px' },
+            { field: 'PassingTouchdowns',           caption: 'TD', title: 'Passing Touchdowns', size: '100px' },
+            { field: 'InterceptionsThrown',         caption: 'Int', title: 'Interceptions Thrown', size: '100px' },
+            { field: 'FirstDownsPassing',           caption: '1D', title: 'First Downs Passing', size: '100px' }
+        ]
+    });
+    w2ui["quarterback_grid"].load("/Player/Quarterback/Json");
+});
+</script>
