@@ -59,6 +59,7 @@ namespace Cs6065_Homework2
             services.AddRazorPages();
 
             services.AddScoped<RosterService>();
+            services.AddScoped<NflPlayerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
