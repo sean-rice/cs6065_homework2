@@ -15,5 +15,14 @@ namespace Cs6065_Homework2.Data
             : base(options)
         {
         }
+
+        public DbSet<NflGame> NflGames { get; set; }
+        public DbSet<NflTeam> NflTeams { get; set; }
+        public DbSet<NflPlayerQuarterback> NflQuarterbacks { get; set; }
+        public DbSet<NflPlayerRunningBack> NflRunningBacks { get; set; }
+        public DbSet<NflPlayerTightEnd> NflTightEnds { get; set; }
+        public DbSet<NflPlayerWideReceiver> NflWideReceivers { get; set; }
+
+        public DbSet<FantasyRoster> FantasyRosters { get; set; }
     }
 }
