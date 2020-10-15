@@ -1,7 +1,7 @@
 @{
-    string GridId = "quarterback-grid";
-    string GridName = "quarterback_grid";
-    string PositionDataRoute = "/Player/Quarterback/Json";
+    string GridId = "tightend-grid";
+    string GridName = "tightend_grid";
+    string PositionDataRoute = "/Player/TightEnd/Json";
     string NameColumnWidth = "100px";
     string TeamNameColumnWidth = "150px";
     string StandardColumnWidth = "75px";
@@ -11,7 +11,7 @@
 $(function () {
     $('#@GridId').w2grid({
         name: '@GridName',
-        header: 'List of Quarterbacks',
+        header: 'List of Tight Ends',
         columns: [
             {
                 field: 'Id',
@@ -44,51 +44,51 @@ $(function () {
                 render: function(record) { return record.Team.Name; }
             },
             {
-                field: 'Position',
-                caption: 'Pos',
-                title: 'Position', hidden: true,
+                field: 'PassTargets',
+                caption: 'Tgt',
+                title: 'Pass Targets',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'PassesCompleted',
-                caption: 'Cmp',
-                title: 'Passes Completed',
+                field: 'Receptions',
+                caption: 'Rec',
+                title: 'Receptions',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'PassesCompletionPercentage',
-                caption: 'Cmp%',
-                title: 'Percentage of Passes Completed',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'PassesAttempted',
-                caption: 'Att',
-                title: 'Passes Attempted',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'PassingYardsGained',
+                field: 'ReceivingYards',
                 caption: 'Yds',
-                title: 'Yards Gained by Passing',
+                title: 'Receiving Yards',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'PassingTouchdowns',
-                caption: 'TD',
-                title: 'Passing Touchdowns',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'InterceptionsThrown',
-                caption: 'Int',
-                title: 'Interceptions Thrown',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'FirstDownsPassing',
+                field: 'FirstDownsReceiving',
                 caption: '1D',
-                title: 'First Downs Passing',
+                title: 'First Downs Receiving',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'YardsBeforeCatch',
+                caption: 'YBC',
+                title: 'Yards Before Catch',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'YardsBeforeCatchPerReception',
+                caption: 'YBC/R',
+                title: 'Yards Before Catch per Reception',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'YardsAfterCatch',
+                caption: 'YAC',
+                title: 'Yards After Catch',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'YardsAfterCatchPerReception',
+                caption: 'YAC/R',
+                title: 'Yards After Catch per Reception',
                 size: '@StandardColumnWidth'
             }
         ]

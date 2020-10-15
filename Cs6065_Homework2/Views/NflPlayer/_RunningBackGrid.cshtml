@@ -1,7 +1,7 @@
 @{
-    string GridId = "quarterback-grid";
-    string GridName = "quarterback_grid";
-    string PositionDataRoute = "/Player/Quarterback/Json";
+    string GridId = "runningback-grid";
+    string GridName = "runningback_grid";
+    string PositionDataRoute = "/Player/RunningBack/Json";
     string NameColumnWidth = "100px";
     string TeamNameColumnWidth = "150px";
     string StandardColumnWidth = "75px";
@@ -11,7 +11,7 @@
 $(function () {
     $('#@GridId').w2grid({
         name: '@GridName',
-        header: 'List of Quarterbacks',
+        header: 'List of Running Backs',
         columns: [
             {
                 field: 'Id',
@@ -44,51 +44,39 @@ $(function () {
                 render: function(record) { return record.Team.Name; }
             },
             {
-                field: 'Position',
-                caption: 'Pos',
-                title: 'Position', hidden: true,
+                field: 'RushingAttempts',
+                caption: 'Rush',
+                title: 'Rushing Attempts',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'PassesCompleted',
-                caption: 'Cmp',
-                title: 'Passes Completed',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'PassesCompletionPercentage',
-                caption: 'Cmp%',
-                title: 'Percentage of Passes Completed',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'PassesAttempted',
-                caption: 'Att',
-                title: 'Passes Attempted',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'PassingYardsGained',
+                field: 'RushingYards',
                 caption: 'Yds',
-                title: 'Yards Gained by Passing',
+                title: 'Rushing Yards Gained',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'PassingTouchdowns',
+                field: 'RushingYardsPerAttempt',
+                caption: 'Y/A',
+                title: 'Rushing Yards per Attempt',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'RushingTouchdowns',
                 caption: 'TD',
-                title: 'Passing Touchdowns',
+                title: 'Rushing Touchdowns',
                 size: '@StandardColumnWidth'
             },
             {
-                field: 'InterceptionsThrown',
-                caption: 'Int',
-                title: 'Interceptions Thrown',
-                size: '@StandardColumnWidth'
-            },
-            {
-                field: 'FirstDownsPassing',
+                field: 'FirstDownsRushing',
                 caption: '1D',
-                title: 'First Downs Passing',
+                title: 'First Downs Rushing',
+                size: '@StandardColumnWidth'
+            },
+            {
+                field: 'LongestRushingAttempt',
+                caption: 'Lng',
+                title: 'Longest Rushing Attempt',
                 size: '@StandardColumnWidth'
             }
         ]
