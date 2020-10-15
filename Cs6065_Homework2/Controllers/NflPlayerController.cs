@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Cs6065_Homework2.Models;
 using Cs6065_Homework2.Services;
@@ -27,7 +29,7 @@ namespace Cs6065_Homework2.Controllers
         [Route("Quarterback/Json")]
         public async Task<JsonResult> QuarterbackJson()
         {
-            var players = await _nflPlayerService.GetQuarterbacksAsync();
+            var players = await _nflPlayerService.GetQuarterbacks().ToListAsync();
             return Json(players, new System.Text.Json.JsonSerializerOptions
                 {
                     PropertyNamingPolicy = null,
@@ -36,7 +38,7 @@ namespace Cs6065_Homework2.Controllers
         [Route("RunningBack/Json")]
         public async Task<JsonResult> RunningBackJson()
         {
-            var players = await _nflPlayerService.GetRunningBacksAsync();
+            var players = await _nflPlayerService.GetRunningBacks().ToListAsync();
             return Json(players, new System.Text.Json.JsonSerializerOptions
                 {
                     PropertyNamingPolicy = null,
@@ -45,7 +47,7 @@ namespace Cs6065_Homework2.Controllers
         [Route("TightEnd/Json")]
         public async Task<JsonResult> TightEndJson()
         {
-            var players = await _nflPlayerService.GetTightEndsAsync();
+            var players = await _nflPlayerService.GetTightEnds().ToListAsync();
             return Json(players, new System.Text.Json.JsonSerializerOptions
                 {
                     PropertyNamingPolicy = null,
@@ -54,7 +56,7 @@ namespace Cs6065_Homework2.Controllers
         [Route("WideReceiver/Json")]
         public async Task<JsonResult> WideReceiverJson()
         {
-            var players = await _nflPlayerService.GetWideReceiversAsync();
+            var players = await _nflPlayerService.GetWideReceivers().ToListAsync();
             return Json(players, new System.Text.Json.JsonSerializerOptions
                 {
                     PropertyNamingPolicy = null,

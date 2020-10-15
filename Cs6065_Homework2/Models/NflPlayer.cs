@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Cs6065_Homework2.Models
 {
@@ -40,5 +41,10 @@ namespace Cs6065_Homework2.Models
         [Required]
         [Display(Name = "Games Started", ShortName = "GS")]
         public int GamesStarted { get; set; }
+
+        public SelectListItem AsSelectListItem()
+        {
+            return new SelectListItem($"{FirstName} {LastName}", Id.ToString());
+        }
     }
 }

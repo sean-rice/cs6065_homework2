@@ -1,4 +1,7 @@
+#nullable enable
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -20,29 +23,58 @@ namespace Cs6065_Homework2.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<NflPlayerQuarterback>> GetQuarterbacksAsync()
+        private async Task<NflPlayerT?> GetPlayerByIdAsync<NflPlayerT>(
+            Guid Id, 
+            DbSet<NflPlayerT> dbSet) where NflPlayerT : NflPlayer
         {
-            return await _dbContext.NflQuarterbacks
-                .Include(player => player.Team)
-                .ToListAsync();
+            NflPlayerT? player = null;
+            try
+            {
+                player = await dbSet
+                    .Where(p => p.Id == Id)
+                    .Include(p => p.Team)
+                    .SingleAsync();
+            }
+            catch {}
+            return player;
         }
-        public async Task<IEnumerable<NflPlayerRunningBack>> GetRunningBacksAsync()
+
+        public IQueryable<NflPlayerQuarterback> GetQuarterbacks()
         {
-            return await _dbContext.NflRunningBacks
-                .Include(player => player.Team)
-                .ToListAsync();
+            return _dbContext.NflQuarterbacks
+                .Include(player => player.Team);
         }
-        public async Task<IEnumerable<NflPlayerTightEnd>> GetTightEndsAsync()
+        public IQueryable<NflPlayerRunningBack> GetRunningBacks()
         {
-            return await _dbContext.NflTightEnds
-                .Include(player => player.Team)
-                .ToListAsync();
+            return _dbContext.NflRunningBacks
+                .Include(player => player.Team);
         }
-        public async Task<IEnumerable<NflPlayerWideReceiver>> GetWideReceiversAsync()
+        public IQueryable<NflPlayerTightEnd> GetTightEnds()
         {
-            return await _dbContext.NflWideReceivers
-                .Include(player => player.Team)
-                .ToListAsync();
+            return _dbContext.NflTightEnds
+                .Include(player => player.Team);
+        }
+        public IQueryable<NflPlayerWideReceiver> GetWideReceivers()
+        {
+            return _dbContext.NflWideReceivers
+                .Include(player => player.Team);
+        }
+
+        public async Task<NflPlayerQuarterback?> GetQuarterbackByIdAsync(Guid Id)
+        {
+            return await GetPlayerByIdAsync<NflPlayerQuarterback>(Id, _dbContext.NflQuarterbacks);
+        }
+        public async Task<NflPlayerRunningBack?> GetRunningBackByIdAsync(Guid Id)
+        {
+            return await GetPlayerByIdAsync<NflPlayerRunningBack>(Id, _dbContext.NflRunningBacks);
+        }
+        public async Task<NflPlayerTightEnd?> GetTightEndByIdAsync(Guid Id)
+        {
+            return await GetPlayerByIdAsync<NflPlayerTightEnd>(Id, _dbContext.NflTightEnds);
+        }
+        public async Task<NflPlayerWideReceiver?> GetWideReceiverByIdAsync(Guid Id)
+        {
+            return await GetPlayerByIdAsync<NflPlayerWideReceiver>(Id, _dbContext.NflWideReceivers);
         }
     }
 }

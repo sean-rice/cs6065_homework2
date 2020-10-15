@@ -1,0 +1,63 @@
+@using Cs6065_Homework2.Models.ViewModels
+
+@model BuildFantasyRosterViewModel
+
+@{
+    ViewData["Title"] = "Build Your Fantasy Roster";
+    List<SelectListItem> QuarterbackSelectListItems = 
+        Model.Quarterbacks.Select(player => player.AsSelectListItem()).ToList();
+    List<SelectListItem> RunningBackSelectListItems = 
+        Model.RunningBacks.Select(player => player.AsSelectListItem()).ToList();
+    List<SelectListItem> TightEndSelectListItems = 
+        Model.TightEnds.Select(player => player.AsSelectListItem()).ToList();
+    List<SelectListItem> WideReceiverSelectListItems = 
+        Model.WideReceivers.Select(player => player.AsSelectListItem()).ToList();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="row justify-content-center">
+    <span class="text-danger">@Html.ValidationSummary(false)</span>
+    <hr>
+    <form method="POST" class="form-group" style="width: 100%">
+        <h3>Choose a quarterback</h3>
+        <partial name="NflPlayer/_QuarterbackGrid" />
+        <label asp-for="QuarterbackId" class="control-label">Quarterback</label>
+        <select asp-for="QuarterbackId" class="form-control" asp-items="@QuarterbackSelectListItems"></select>
+        <span asp-validation-for="QuarterbackId" class="text-danger"></span>
+        <hr>
+
+        <h3>Choose running backs</h3>
+        <partial name="NflPlayer/_RunningBackGrid" />
+        <label asp-for="RunningBack1Id" class="control-label">Running Back #1</label>
+        <select asp-for="RunningBack1Id" class="form-control" asp-items="@RunningBackSelectListItems"></select>
+        <span asp-validation-for="RunningBack1Id" class="text-danger"></span>
+        <label asp-for="RunningBack2Id" class="control-label">Running Back #2</label>
+        <select asp-for="RunningBack2Id" class="form-control" asp-items="@RunningBackSelectListItems"></select>
+        <span asp-validation-for="RunningBack2Id" class="text-danger"></span>
+        <hr>
+
+        <h3>Choose a tight end</h3>
+        <partial name="NflPlayer/_TightEndGrid" />
+        <label asp-for="TightEndId" class="control-label">Tight End</label>
+        <select asp-for="TightEndId" class="form-control" asp-items="@TightEndSelectListItems"></select>
+        <span asp-validation-for="TightEndId" class="text-danger"></span>
+        <hr>
+
+        <h3>Choose wide receivers</h3>
+        <partial name="NflPlayer/_WideReceiverGrid" />
+        <label asp-for="WideReceiver1Id" class="control-label">Wide Receiver #1</label>
+        <select asp-for="WideReceiver1Id" class="form-control" asp-items="@WideReceiverSelectListItems"></select>
+        <span asp-validation-for="WideReceiver1Id" class="text-danger"></span>
+        <label asp-for="WideReceiver2Id" class="control-label">Wide Receiver #2</label>
+        <select asp-for="WideReceiver2Id" class="form-control" asp-items="@WideReceiverSelectListItems"></select>
+        <span asp-validation-for="WideReceiver2Id" class="text-danger"></span>
+        <hr>
+        <input type="submit" value="Submit" meth asp-action="Build"/>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
