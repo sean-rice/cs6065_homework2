@@ -38,8 +38,12 @@ namespace Cs6065_Homework2.Models
 
         public IEnumerable<NflPlayer> AsPlayersEnumerable()
         {
-            return new List<NflPlayer> { Quarterback, RunningBack1,
-                RunningBack2, TightEnd, WideReceiver1, WideReceiver2 };
+            yield return Quarterback;
+            yield return RunningBack1;
+            yield return RunningBack2;
+            yield return TightEnd;
+            yield return WideReceiver1;
+            yield return WideReceiver2;
         }
     }
 }

@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,28 +25,33 @@ namespace Cs6065_Homework2.Services
             _rosterService = rosterService;
         }
 
-        public async Task<float> GetUserPointsForWeek(Guid userId, int week)
+        public async Task<float> GetUserPointsForWeeks(ApplicationUser user, IEnumerable<int> weeks)
         {
-            FantasyRoster? roster = await _rosterService.GetRosterForUserIdAsync(userId);
+            FantasyRoster? roster = await _rosterService.GetRosterForUserIdAsync(user.Id);
             if (roster == null)
             {
                 return float.NaN;
             }
+            return weeks.Select(w => GetRosterPointsForWeek(roster, w)).Sum();
+        }
+
+        public float GetRosterPointsForWeek(FantasyRoster roster, int week)
+        {
             float fantasyScore = roster.AsPlayersEnumerable()
-                .Select(p => GetFantasyPointsForPlayerDuringWeek(p, week))
+                .Select(p => GetFantasyPointsForNflPlayerDuringWeek(p, week))
                 .Sum();
             return fantasyScore;
         }
 
-        private float GetFantasyPointsForPlayerDuringWeek(NflPlayer player, int week)
+        private float GetFantasyPointsForNflPlayerDuringWeek(NflPlayer nflPlayer, int week)
         {
             float playerScore = _dbContext.NflGames
                 // find games during that week
                 .Where(g => g.Week == week)
                 // that the player's team was involved in
-                .Where(g => g.TeamWasInGame(player.TeamId))
+                .Where(g => g.TeamWasInGame(nflPlayer.TeamId))
                 // convert/calculate the fantasy points for that player's team in those games
-                .Select(g => GetFantasyPointsForTeamInGame(g, player.TeamId))
+                .Select(g => GetFantasyPointsForTeamInGame(g, nflPlayer.TeamId))
                 // and add up all the points from the games (if multiple).
                 .Sum();
             return playerScore;
