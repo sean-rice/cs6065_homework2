@@ -1,0 +1,55 @@
+@using System.Linq
+@using System.Text.Json
+@using Cs6065_Homework2.Models.ViewModels
+@model ScoreboardViewModel
+
+@{
+    string GridId = "scoreboard-grid";
+    string GridName = "scoreboard_grid";
+    string UsernameColumnWidth = "150px";
+
+    IEnumerable<int> weeks = Enumerable.Range(1, 17);
+}
+
+<div id="@GridId" style="width: 100%; height: 300px;"></div>
+<script>
+var scoreboardRecords = @Html.Raw(JsonSerializer.Serialize(Model.Rows
+    // dumb hack: map the dictionary to the same dictionary, but with string-
+    // type keys instead of int. this is currently necessary for the
+    // System.Text.Json.JsonSerialzer class.
+    // we go from Dictionary<int, float> to Dictionary<string, float>
+    .Select(row => new
+        {
+            Username = row.Username,
+            PointsByWeek = row.PointsByWeek
+                .Select(kvp => new KeyValuePair<string, float>(kvp.Key.ToString(), kvp.Value))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+        })));
+const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
+for (record of scoreboardRecords)
+{
+    record.Total = sumValues(record.PointsByWeek);
+}
+
+$(function () {
+    $('#@GridId').w2grid({
+        name: '@GridName',
+        header: 'Fantasy Football Scoreboard',
+        recid: "Username",
+        columns: [
+            {
+                field: 'Username',
+                caption: 'Username',
+                size: '@UsernameColumnWidth',
+            },
+            @Html.Raw(String.Join(",\n\t\t\t", weeks.Select(i => $"{{ field: 'W{i}', caption: 'W{i}', size: '50px', render: function(record) {{ return record.PointsByWeek[{i}]; }} }}"))),
+            {
+                field: 'Total',
+                caption: 'Total',
+                size: '50px',
+            },
+        ],
+    });
+    w2ui['@GridName'].add(scoreboardRecords);
+});
+</script>

@@ -1,8 +1,18 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Cs6065_Homework2.Models.ViewModels
+@model ScoreboardViewModel
+
+@{
+    ViewData["Title"] = "Scoreboard";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    @if (Model == null)
+    {
+        <p>error loading scoreboard! sorry about that.</p>
+    }
+    else
+    {
+        <partial name="_Scoreboard" model="@Model"></partial>
+    }
 </div>
