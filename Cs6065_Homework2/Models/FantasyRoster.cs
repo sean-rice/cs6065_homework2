@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,5 +35,15 @@ namespace Cs6065_Homework2.Models
         [ForeignKey("TightEnd")]
         public Guid TightEndId { get; set; }
         public NflPlayerTightEnd TightEnd { get; set; }
+
+        public IEnumerable<NflPlayer> AsPlayersEnumerable()
+        {
+            yield return Quarterback;
+            yield return RunningBack1;
+            yield return RunningBack2;
+            yield return TightEnd;
+            yield return WideReceiver1;
+            yield return WideReceiver2;
+        }
     }
 }

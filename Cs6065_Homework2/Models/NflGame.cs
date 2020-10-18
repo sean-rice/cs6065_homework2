@@ -29,5 +29,10 @@ namespace Cs6065_Homework2.Models
         [ForeignKey("SecondaryTeam")]
         public Guid SecondaryTeamId { get; set; }
         public NflTeam SecondaryTeam { get; set; }
+
+        public bool TeamWasInGame(Guid teamId)
+        {
+            return teamId == PrimaryTeamId || teamId == SecondaryTeamId;
+        }
     }
 }
