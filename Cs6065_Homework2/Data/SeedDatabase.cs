@@ -44,14 +44,13 @@ namespace Cs6065_Homework2.Data
         {
             if (recordsCount == recordsWritten)
             {
-                logger?.LogInformation($"seeded {dbSetName} with all {recordsCount} records.");
+                logger?.LogInformation($"seeded {dbSetName}: {recordsWritten}/{recordsCount} records.");
             }
             else
             {
-                logger?.LogWarning($"found write count mismatch when seeding {dbSetName}: {recordsCount} records, {recordsWritten} reported written.");
+                logger?.LogWarning($"seeded {dbSetName}: {recordsWritten}/{recordsCount} records.");
             }
         }
-
 
         private static async Task<bool> SeedNflTeams(
             ILogger? logger,
@@ -59,23 +58,28 @@ namespace Cs6065_Homework2.Data
             ApplicationDbContext dbContext)
         {
             const string dbSetName = "NflTeams";
-            string csvPath = configuration.GetValue<string>(ConfigBaseSection + ":" + dbSetName);
-            using var reader = new StreamReader(csvPath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            var records = new List<NflTeam>(csv.GetRecords<NflTeam>());
-            foreach (var record in records)
-            {
-                dbContext.NflTeams.Add(record);
-            }
             try
             {
+                string? csvPath = configuration.GetValue<string?>(ConfigBaseSection + ":" + dbSetName);
+                if (csvPath == null)
+                {
+                    logger?.LogWarning($"failed to get csv path from configuration when seeding {dbSetName}.");
+                    return false;
+                }
+                using var reader = new StreamReader(csvPath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                var records = new List<NflTeam>(csv.GetRecords<NflTeam>());
+                foreach (var record in records)
+                {
+                    dbContext.NflTeams.Add(record);
+                }
                 int recordsWritten = await dbContext.SaveChangesAsync();
                 Report(logger, dbSetName, records.Count, recordsWritten);
                 return records.Count == recordsWritten;
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
-                logger?.LogWarning($"caught DbUpdateException when seeding {dbSetName}.");
+                logger?.LogWarning($"caught exception when seeding {dbSetName}.");
                 return false;
             }
         }
@@ -86,33 +90,38 @@ namespace Cs6065_Homework2.Data
             ApplicationDbContext dbContext)
         {
             const string dbSetName = "NflGames";
-            string csvPath = configuration.GetValue<string>(ConfigBaseSection + ":" + dbSetName);
-            using var reader = new StreamReader(csvPath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            csv.Configuration.HeaderValidated = null;
-            csv.Configuration.MissingFieldFound = null;
-            var records = new List<NflGame>(csv.GetRecords<NflGame>());
-            foreach (var record in records)
-            {
-                var primaryTeam = await dbContext.NflTeams
-                    .Where(team => team.Id == record.PrimaryTeamId)
-                    .SingleAsync();
-                var secondaryTeam = await dbContext.NflTeams
-                    .Where(team => team.Id == record.SecondaryTeamId)
-                    .SingleAsync();
-                record.PrimaryTeam = primaryTeam;
-                record.SecondaryTeam = secondaryTeam;
-                dbContext.NflGames.Add(record);
-            }
             try
             {
+                string? csvPath = configuration.GetValue<string?>(ConfigBaseSection + ":" + dbSetName);
+                if (csvPath == null)
+                {
+                    logger?.LogWarning($"failed to get csv path from configuration when seeding {dbSetName}.");
+                    return false;
+                }
+                using var reader = new StreamReader(csvPath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                csv.Configuration.HeaderValidated = null;
+                csv.Configuration.MissingFieldFound = null;
+                var records = new List<NflGame>(csv.GetRecords<NflGame>());
+                foreach (var record in records)
+                {
+                    var primaryTeam = await dbContext.NflTeams
+                        .Where(team => team.Id == record.PrimaryTeamId)
+                        .SingleAsync();
+                    var secondaryTeam = await dbContext.NflTeams
+                        .Where(team => team.Id == record.SecondaryTeamId)
+                        .SingleAsync();
+                    record.PrimaryTeam = primaryTeam;
+                    record.SecondaryTeam = secondaryTeam;
+                    dbContext.NflGames.Add(record);
+                }
                 int recordsWritten = await dbContext.SaveChangesAsync();
                 Report(logger, dbSetName, records.Count, recordsWritten);
                 return records.Count == recordsWritten;
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
-                logger?.LogWarning($"caught DbUpdateException when seeding {dbSetName}.");
+                logger?.LogWarning($"caught exception when seeding {dbSetName}.");
                 return false;
             }
         }
@@ -122,32 +131,37 @@ namespace Cs6065_Homework2.Data
             IConfiguration configuration,
             ApplicationDbContext dbContext,
             DbSet<NflPlayerT> targetDbSet,
-            string targetDbSetName,
             string configFinalSection) where NflPlayerT : NflPlayer
         {
-            string csvPath = configuration.GetValue<string>(ConfigBaseSection + ":" + configFinalSection);
-            using var reader = new StreamReader(csvPath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            csv.Configuration.HeaderValidated = null;
-            csv.Configuration.MissingFieldFound = null;
-            var records = new List<NflPlayerT>(csv.GetRecords<NflPlayerT>());
-            foreach (NflPlayerT record in records)
-            {
-                var playerTeam = await dbContext.NflTeams
-                    .Where(team => team.Id == record.TeamId)
-                    .SingleAsync();
-                record.Team = playerTeam;
-                targetDbSet.Add(record);
-            }
+            string dbSetName = nameof(targetDbSet) ?? "UnknownDbSet";
             try
             {
+                string? csvPath = configuration.GetValue<string?>(ConfigBaseSection + ":" + configFinalSection);
+                if (csvPath == null)
+                {
+                    logger?.LogWarning($"failed to get csv path from configuration when seeding {dbSetName}.");
+                    return false;
+                }
+                using var reader = new StreamReader(csvPath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                csv.Configuration.HeaderValidated = null;
+                csv.Configuration.MissingFieldFound = null;
+                var records = new List<NflPlayerT>(csv.GetRecords<NflPlayerT>());
+                foreach (NflPlayerT record in records)
+                {
+                    var playerTeam = await dbContext.NflTeams
+                        .Where(team => team.Id == record.TeamId)
+                        .SingleAsync();
+                    record.Team = playerTeam;
+                    targetDbSet.Add(record);
+                }
                 int recordsWritten = await dbContext.SaveChangesAsync();
-                Report(logger, targetDbSetName, records.Count, recordsWritten);
+                Report(logger, dbSetName, records.Count, recordsWritten);
                 return records.Count == recordsWritten;
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
-                logger?.LogWarning($"caught DbUpdateException when seeding {targetDbSetName}.");
+                logger?.LogWarning($"caught exception when seeding {dbSetName}.");
                 return false;
             }
         }
@@ -157,10 +171,8 @@ namespace Cs6065_Homework2.Data
             IConfiguration configuration, 
             ApplicationDbContext dbContext)
         {
-            return await SeedNflPlayer<NflPlayerQuarterback>(
-                logger, configuration, dbContext, dbContext.NflQuarterbacks,
-                "NflQuarterbacks", "NflQuarterbacks"
-            );
+            return await SeedNflPlayer<NflPlayerQuarterback>(logger, configuration,
+                dbContext, dbContext.NflQuarterbacks, "NflQuarterbacks");
         }
 
         public static async Task<bool> SeedNflRunningBacks(
@@ -168,10 +180,8 @@ namespace Cs6065_Homework2.Data
             IConfiguration configuration, 
             ApplicationDbContext dbContext)
         {
-            return await SeedNflPlayer<NflPlayerRunningBack>(
-                logger, configuration, dbContext, dbContext.NflRunningBacks,
-                "NflRunningBacks", "NflRunningBacks"
-            );
+            return await SeedNflPlayer<NflPlayerRunningBack>(logger, configuration,
+                dbContext, dbContext.NflRunningBacks, "NflRunningBacks");
         }
 
         public static async Task<bool> SeedNflTightEnds(
@@ -179,10 +189,8 @@ namespace Cs6065_Homework2.Data
             IConfiguration configuration, 
             ApplicationDbContext dbContext)
         {
-            return await SeedNflPlayer<NflPlayerTightEnd>(
-                logger, configuration, dbContext, dbContext.NflTightEnds, 
-                "NflTightEnds", "NflTightEnds"
-            );
+            return await SeedNflPlayer<NflPlayerTightEnd>(logger, configuration,
+                dbContext, dbContext.NflTightEnds, "NflTightEnds");
         }
 
         public static async Task<bool> SeedNflWideReceivers(
@@ -190,10 +198,8 @@ namespace Cs6065_Homework2.Data
             IConfiguration configuration, 
             ApplicationDbContext dbContext)
         {
-            return await SeedNflPlayer<NflPlayerWideReceiver>(
-                logger, configuration, dbContext, dbContext.NflWideReceivers,
-                "NflWideReceivers", "NflWideReceivers"
-            );
+            return await SeedNflPlayer<NflPlayerWideReceiver>(logger, configuration,
+                dbContext, dbContext.NflWideReceivers, "NflWideReceivers");
         }
     }
 }

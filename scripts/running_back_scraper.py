@@ -19,6 +19,7 @@ rb_urls = {
     "https://www.pro-football-reference.com/players/M/MackMa00.htm",
     "https://www.pro-football-reference.com/players/M/MostRa00.htm",
     "https://www.pro-football-reference.com/players/E/EdwaGu00.htm",
+    "https://www.pro-football-reference.com/players/P/PeteAd01.htm"
 }
 
 # map from in-html "data-stat" strings to our csv column name strings

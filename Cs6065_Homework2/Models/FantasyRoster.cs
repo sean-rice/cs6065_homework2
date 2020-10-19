@@ -24,6 +24,10 @@ namespace Cs6065_Homework2.Models
         public Guid RunningBack2Id { get; set; }
         public NflPlayerRunningBack RunningBack2 { get; set; }
 
+        [ForeignKey("TightEnd")]
+        public Guid TightEndId { get; set; }
+        public NflPlayerTightEnd TightEnd { get; set; }
+
         [ForeignKey("WideReceiver1")]
         public Guid WideReceiver1Id { get; set; }
         public NflPlayerWideReceiver WideReceiver1 { get; set; }
@@ -31,10 +35,6 @@ namespace Cs6065_Homework2.Models
         [ForeignKey("WideReceiver2")]
         public Guid WideReceiver2Id { get; set; }
         public NflPlayerWideReceiver WideReceiver2 { get; set; }
-
-        [ForeignKey("TightEnd")]
-        public Guid TightEndId { get; set; }
-        public NflPlayerTightEnd TightEnd { get; set; }
 
         public IEnumerable<NflPlayer> AsPlayersEnumerable()
         {
