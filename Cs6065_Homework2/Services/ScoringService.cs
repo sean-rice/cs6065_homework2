@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using Cs6065_Homework2.Data;
 using Cs6065_Homework2.Models;
@@ -28,19 +29,34 @@ namespace Cs6065_Homework2.Services
 
         public async Task<ScoreboardViewModel> GetScoreboardAsync(IEnumerable<int> weeks)
         {
-            var usersWithRosters = _dbContext.Users
-                .Where(u => _dbContext.FantasyRosters.Where(r => r.OwnerId == u.Id).SingleOrDefault() != null);
+            // we can't open multiple connections to the database concurrently,
+            // which would be necessary if we wanted to process the users in
+            // asynchronously because we call GetUserPointsForWeeksAsync. so,
+            // we first collect the list of users with rosters into a list,
+            // create an empty collection for the scoreboard rows, then finally
+            // sequentially iterate through the user list and fetch their
+            // points by week (in a blocking manner) and add the new scoreboard
+            // row to a list.
+            // see https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext#avoiding-dbcontext-threading-issues
+            var usersWithRosters = await _dbContext.Users
+                .Where(u => _dbContext.FantasyRosters.Where(r => r.OwnerId == u.Id).SingleOrDefault() != null)
+                .ToListAsync();
             
-            IEnumerable<ScoreboardRow> rows = await Task.WhenAll(
-                usersWithRosters.ToList()
-                .Select(async user => new ScoreboardRow
+            List<ScoreboardRow> rows = new List<ScoreboardRow>(usersWithRosters.Count);
+            foreach (var user in usersWithRosters)
+            {
+                var pointsByWeek = GetUserPointsForWeeksAsync(user, weeks)
+                    .Result
+                    .ToDictionary(item => item.Week, item => item.Points);
+                
+                rows.Add(new ScoreboardRow
                     {
                         Username = user.UserName,
-                        PointsByWeek = (await GetUserPointsForWeeksAsync(user, weeks))
-                            .ToDictionary(item => item.Week, item => item.Points)
-                    }));
-                var scoreboard = new ScoreboardViewModel { Rows = rows };
-                return scoreboard;
+                        PointsByWeek = pointsByWeek
+                    });
+            }
+            var scoreboard = new ScoreboardViewModel { Rows = rows };
+            return scoreboard;
         }
 
         public async Task<IEnumerable<(int Week, float Points)>> GetUserPointsForWeeksAsync(
