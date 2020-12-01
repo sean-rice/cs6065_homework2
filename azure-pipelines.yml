@@ -48,3 +48,13 @@ steps:
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     RuntimeStack: 'DOTNETCORE|3.1'
 
+# restart the app service
+# we do this because on azure's f1 (free) app service tier,
+# the app gets put to sleep after some time (15-30 min?) of
+# inactivity, and takes a while (~30 sec?) to wake up on
+# first request when asleep.
+- task: AzureAppServiceManage@0
+  inputs:
+    azureSubscription: 'Azure for Students(b0b90835-5bae-4e31-9655-c4366659e207)'
+    Action: 'Restart Azure App Service'
+    WebAppName: 'cs6065-homework2'
